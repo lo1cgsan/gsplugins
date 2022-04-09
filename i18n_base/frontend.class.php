@@ -146,6 +146,7 @@ class I18nFrontend {
       if (substr($language,0,1) == '(') $language = substr($language,1,2);
       $u = self::getFancyLanguageUrl($slug, $slugparent, $language, $type);
     } else {
+      if (is_null($language)) $language = "";
       if (substr($language,0,1) == '(') $language = null;
       if (@strpos(@$PERMALINK_ORIG,'%parents%') !== false) {
         $u = self::getFancyLanguageUrl($slug, $slugparent, null, $type);
