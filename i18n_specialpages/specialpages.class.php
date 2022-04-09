@@ -136,7 +136,8 @@ class I18nSpecialPages {
     }
     $date = @self::getField($name);
     if ($date && !is_numeric($date)) $date = strtotime($date); else $date = (int) $date;
-    return $date ? strftime($format, $date) : null;
+    $format = str_replace("%", "", $format);
+    return $date ? date($format, $date) : null;
   }
 
   public static function outputDate($name, $format=null) {
