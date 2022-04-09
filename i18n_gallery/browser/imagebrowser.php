@@ -4,16 +4,16 @@
    *
    * Displays and selects file link to insert
    */
-   
+
   function i18n_gallery_exif_text($text, $defEnc=null) {
-    if (!$defEnc) $defEnc = 'ISO-8859-15'; 
+    if (!$defEnc) $defEnc = 'ISO-8859-15';
     if (function_exists('mb_convert_encoding') && function_exists('mb_detect_encoding')) {
       return mb_convert_encoding($text, "UTF-8", mb_detect_encoding($text, 'UTF-8, '.$defEnc));
     } else {
       return $text;
     }
   }
-   
+
   function i18n_gallery_image_info($file, $defEnc=null, $debug=false) {
     $info = array();
     if ($debug) $info['debug'] = '';
@@ -50,7 +50,7 @@
       }
     } catch (Exception $e) {
       # ignore
-    }   
+    }
     if (!$debug && count($info) == 4) return $info;
     # 2. get IPTC data, if not in XMP data (assume ISO-8859-1)
     try {
@@ -60,17 +60,17 @@
         if ($debug) $info['debug'] .= print_r($iptc,true) . "\r\n";
         if (!isset($info['title']) && @$iptc['2#005']) { # document title
           $info['title'] = i18n_gallery_exif_text(implode("\r\n", $iptc['2#005']));
-        }    
+        }
         if (!isset($info['title']) && @$iptc['2#105']) { # title
           $info['title'] = i18n_gallery_exif_text(implode("\r\n", $iptc['2#105']));
-        }    
+        }
         if (!isset($info['description']) && @$iptc['2#120']) { # description
           $info['description'] = i18n_gallery_exif_text(implode("\r\n", $iptc['2#120']));
           if ($info['description'] == @$info['title']) unset($info['description']);
         }
         if (!isset($info['tags']) && @$iptc['2#025']) { # keywords
           $info['tags'] = array();
-          foreach ($iptc['2#025'] as $t) $info['tags'][] = i18n_gallery_exif_text($t); 
+          foreach ($iptc['2#025'] as $t) $info['tags'][] = i18n_gallery_exif_text($t);
         }
         if (!isset($info['author']) && @$iptc['2#080']) { # author
           $info['author'] = i18n_gallery_exif_text(implode("\r\n", $iptc['2#080']));
@@ -92,7 +92,7 @@
         if (!isset($info['description'])) {
           if (@$exif['IFD0']['Comments']) {
             $info['description'] = i18n_gallery_exif_text($exif['IFD0']['Comments']);
-            if ($info['description'] == @$info['title']) unset($info['description']);        
+            if ($info['description'] == @$info['title']) unset($info['description']);
           }
           if (@$exif['EXIF']['UserComment']) {
             $info['description'] = i18n_gallery_exif_text($exif['EXIF']['UserComment']);
@@ -112,7 +112,7 @@
     }
     return $info;
   }
-   
+
   include('../../../gsconfig.php');
   $admin = defined('GSADMIN') ? GSADMIN : 'admin';
   include("../../../${admin}/inc/common.php");
@@ -122,7 +122,7 @@
 
   i18n_merge('i18n_gallery',substr($LANG,0,2));
   i18n_merge('i18n_gallery','en');
-  
+
   if (isset($_GET['path'])) {
     $subPath = preg_replace('/\.+\//','',$_GET['path']);
     if ($subPath) $subPath .= '/';
@@ -170,10 +170,10 @@
 			  $ss = @stat($path . $file);
         list($width,$height) = getimagesize($path . $file);
         $info = i18n_gallery_image_info($path . $file, null, @$debug);
-        $filesArray[] = array('name' => $file, 'date' => @date('M j, Y',$ss['ctime']), 'size' => fSize($ss['size']), 
+        $filesArray[] = array('name' => $file, 'date' => @date('M j, Y',$ss['ctime']), 'size' => fSize($ss['size']),
                               'bytes' => $ss['size'], 'width' => $width, 'height' => $height,
                               'title' => @$info['title'], 'tags' => @$info['tags'],
-                              'description' => @$info['description'], 
+                              'description' => @$info['description'],
                               'debug' => @$info['debug']);
 			  $totalsize = $totalsize + $ss['size'];
 			  $count++;
@@ -197,18 +197,18 @@
 		.wrapper, #maincontent, #imageTable { width: 100% }
 	</style>
 </head>
-<body id="imagebrowser" >	
+<body id="imagebrowser" >
   <div class="wrapper">
   <div id="maincontent">
 	  <div class="main" style="border:none;">
 		  <h3><?php i18n('UPLOADED_FILES'); ?></h3>
-      <div class="h5">/ <a href="?func=<?php echo $func; ?>&amp;w=<?php echo $w; ?>&amp;h=<?php echo $h; ?>&amp;autoclose=<?php echo $autoclose; ?>">uploads</a> / 
-<?php 
+      <div class="h5">/ <a href="?func=<?php echo $func; ?>&amp;w=<?php echo $w; ?>&amp;h=<?php echo $h; ?>&amp;autoclose=<?php echo $autoclose; ?>">uploads</a> /
+<?php
   foreach ($pathParts as $pathPart){
 		if ($pathPart!=''){
 			$urlPath .= $pathPart;
 ?>
-        <a href="?path=<?php echo $urlPath; ?>&amp;func=<?php echo $func; ?>&amp;w=<?php echo $w; ?>&amp;h=<?php echo $h; ?>&autoclose=1"><?php echo $pathPart; ?></a> / 
+        <a href="?path=<?php echo $urlPath; ?>&amp;func=<?php echo $func; ?>&amp;w=<?php echo $w; ?>&amp;h=<?php echo $h; ?>&autoclose=1"><?php echo $pathPart; ?></a> /
 <?php
       $urlPath .= '/';
 		}
@@ -218,13 +218,14 @@
       <table class="highlight" id="imageTable">
         <tbody>
 <?php
-	if (count($dirsSorted) != 0) {       
+  if (!is_countable($dirsSorted)) $dirsSorted = array();
+	if (count($dirsSorted) != 0) {
 		foreach ($dirsSorted as $upload) {
-			$p = $subPath . $upload['name']; 
+			$p = $subPath . $upload['name'];
 ?>
-          <tr class="All" > 
+          <tr class="All" >
 		        <td class="" colspan="5">
-		          <img src="../../../<?php echo $admin; ?>/template/images/folder.png" width="11" /> 
+		          <img src="../../../<?php echo $admin; ?>/template/images/folder.png" width="11" />
               <a href="imagebrowser.php?path=<?php echo $p; ?>&amp;func=<?php echo $func; ?>&amp;w=<?php echo $w; ?>&amp;h=<?php echo $h; ?>&autoclose=1" title="<?php echo $upload['name']; ?>"><strong><?php echo $upload['name']; ?></strong></a>
 		        </td>
           </tr>
@@ -233,7 +234,8 @@
 	}
 
   $metadata = array();
-	if (count($filesSorted) != 0) { 			
+  if (!is_countable($filesSorted)) $filesSorted = array();
+	if (count($filesSorted) != 0) {
 		foreach ($filesSorted as $upload) {
       $onclick = 'submitLink('.count($metadata).')';
       $metadata[] = array('url' => $subPath.$upload['name'],
@@ -301,6 +303,6 @@
       </script>
     </div>
   </div>
-  </div>	
+  </div>
 </body>
 </html>
