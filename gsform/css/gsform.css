@@ -1,0 +1,78 @@
+/* CSS Styles for GSFORM plugin */
+
+.gsffbig { font-size: 8pt; }
+.gsffmed { font-size: 10pt; }
+.gsfsmall { font-size: 12pt; }
+
+.gsftab { font-size: 10pt; }
+.gsftab td { padding: 2px; }
+.gsftbadm { ; }
+.gsfenh { font-weight: bold; padding: 1px; }
+.gsftitle { font-weight: bold; }
+.gsflabel { padding: 1px; }
+.gsfcount { padding: 2px; font-weight: bold;}
+.gsfentry { padding: 1px; }
+
+.gsfreqmark { color: red; font-weight: bold; }
+.gsfreqinfo { font-size: 90%; }
+.gsfinp,.gsfchk,.gsfsel,.gsftxta { 
+	font-family: arial,helvetica,sans-serif;
+	font-size: 10pt;
+	line-height: 1.3em;
+	margin: 0;
+	padding: 1px;
+	width: 250px;
+	border: 1px solid #666;
+	border-color: #777;
+	border-radius: 3px;
+}
+.gsfchk { width: auto; }
+.gsftxta { width: 100%; }
+.gsfbtn {
+	font: 10pt/1.5em Arial, Helvetica, Verdana, Tahoma, sans-serif;
+	padding: 2px;
+	background-color: #e0e0e0;
+	border: 1px solid #444;
+	border-radius: 3px;
+}
+
+.gsftr { text-align: right; }
+.gsfcenter { text-align: center; }
+.gsffl { float: left; }
+.gsffr { float: right; }
+.gsfnav { margin-right: 20px; }
+
+.gsfheader {
+	font-weight:bold;
+	border-top:1px solid brown;
+	border-left:1px solid brown;
+	margin: 5px 20px 0 0px;
+	padding-left:5px;
+}
+
+.gsfdata { font: 8pt/1.4em Arial, Helvetica, Verdana, Tahoma, sans-serif; }
+.gsfrequired { background-color: #F6DAA8; }
+.gsfoptional { background-color: #e3d3c3; }
+.gsfopt { width:125px; }
+
+.gsfemail { font-size: 90%; font-style: italic; }
+.gsfwww { font-size: 90%; }
+
+.gsfinfo { color: green; font-weight: bold; }
+.gsfwarning { color: red; }
+.gsferror { color: red; }
+.gsfsuccess { color: black; }
+.gsfhide { visibility: hidden; display: none; }
+
+#loadtab .wrapper .nav li a.gsform_selected {
+  box-shadow: 2px -2px 2px rgba(0, 0, 0, 0.1);
+  background: -moz-linear-gradient(center top , #FFFFFF 3%, #F6F6F6 100%) repeat scroll 0 0 transparent;
+  background-color: #f6f6f6;
+  color: #182227;
+  font-weight: bold !important;
+  text-shadow: 1px 1px 0 #FFFFFF;
+}
+#gsftip { padding: 2px; color: navy; font-size: 10pt; }
+#tip { position: absolute; width: 200px; height: auto; font-family: Arial,Tahoma,sans-serif; font-size: 10pt; 	background-color: #ccc; color: #000; z-index: 3; display: none; }
+#tiph { background: #006699; color: #FFF; border: 1px solid #666; padding: 3px; font-weight: bold; font-size: 9pt; }
+#tipc { border: 1px solid #666; border-top: none; padding: 3px; }
