@@ -1,14 +1,14 @@
 <?php
 
   class I18nSpecialPagesEditor {
-    
+
     public static function stripSlashes() {
-      if (get_magic_quotes_gpc()) {
-        foreach ($_GET as $key => $value) $_GET[$key] = stripslashes($value);
-        foreach ($_POST as $key => $value) $_POST[$key] = stripslashes($value);
-      }
+      // if (get_magic_quotes_gpc()) {
+      //   foreach ($_GET as $key => $value) $_GET[$key] = stripslashes($value);
+      //   foreach ($_POST as $key => $value) $_POST[$key] = stripslashes($value);
+      // }
     }
-    
+
     public static function validate() {
       $msgs = array();
       if (!@$_POST['post-title']) {
@@ -30,7 +30,7 @@
       $emptyname = false;
       $emptylabel = false;
       $invalidname = false;
-      $names = array(); 
+      $names = array();
       for ($i=0; isset($_POST['cf_'.$i.'_name']); $i++) {
         if (!$_POST['cf_'.$i.'_name'] && !$_POST['cf_'.$i.'_label']) continue;
         if (!$_POST['cf_'.$i.'_name']) {
@@ -58,7 +58,7 @@
       }
       return implode("<br />", $msgs);
     }
-  
+
     public static function save($oldname) {
       if ($oldname && file_exists(GSDATAOTHERPATH . 'i18n_special_' . $oldname . '.xml')) {
         $olddata = getXML(GSDATAOTHERPATH . 'i18n_special_' . $oldname . '.xml');
@@ -68,14 +68,14 @@
       }
       $success = self::write(GSDATAOTHERPATH . 'i18n_special_' . $_POST['post-name'] . '.xml');
       $dir_handle = @opendir(GSDATAPAGESPATH) or die("Unable to open pages directory");
-      if ($oldname && $olddata) { 
+      if ($oldname && $olddata) {
         require_once(GSPLUGINPATH.'i18n_specialpages/backend.class.php');
         I18nSpecialPagesBackend::updatePages($oldname, $_POST['post-name'], $_POST['post-slug'] && $oldslug != $_POST['post-slug']);
       }
       return $success;
-    }  
-     
-    public static function write($file) { 
+    }
+
+    public static function write($file) {
    		$data = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><specialpage></specialpage>');
       $data->addChild('name', $_POST['post-name']);
       $data->addChild('title')->addCData($_POST['post-title']);
@@ -105,7 +105,7 @@
             $options = preg_split("/\r?\n/", rtrim($_POST['cf_'.$i.'_options']));
             foreach ($options as $option) {
               $item->addChild('option')->addCData($option);
-            } 
+            }
           }
           if (@$_POST['cf_'.$i.'_index'] == '1' || @$_POST['cf_'.$i.'_index'] == '2' || @$_POST['cf_'.$i.'_index'] == '3') {
             $item->addChild('index', $_POST['cf_'.$i.'_index']);
@@ -114,7 +114,7 @@
       }
    		return XMLsave($data, $file);
     }
-  
+
     public static function undo($name, $newname) {
       $newdata = getXML(GSDATAOTHERPATH . 'i18n_special_' . $newname . '.xml');
       $newslug = (string) $newdata->slug;
@@ -126,7 +126,7 @@
       I18nSpecialPagesBackend::updatePages($name, $newname, $oldslug && $oldslug != $newslug);
       return true;
     }
-    
+
   }
 
   I18nSpecialPagesEditor::stripSlashes();
@@ -213,10 +213,12 @@
         $lang = substr($filename, strpos($filename,'_')+1, -4);
         if (!in_array($lang, $languages)) $languages[] = $lang;
       } else {
-        $tags = preg_split('/\s*,\s*/', trim(@$data['metak']));
         $special = false;
-        foreach ($tags as $tag) {
-          if (substr($tag,0,9) == '_special_') { $special = true; break; }
+        if (!is_null($data['metak'])) {
+          $tags = preg_split('/\s*,\s*/', trim(@$data['metak']));
+          foreach ($tags as $tag) {
+            if (substr($tag,0,9) == '_special_') { $special = true; break; }
+          }
         }
         if (!$special) {
           $pages[substr($filename,0,-4)] = html_entity_decode(stripslashes($data->title),ENT_QUOTES,'UTF-8');
@@ -231,14 +233,14 @@
   $templates = array();
   $themes_handle = opendir(GSTHEMESPATH.$TEMPLATE) or die("Unable to open " . GSTHEMESPATH);
   while ($filename = readdir($themes_handle)) {
-    if (substr($filename,-4) == '.php' && $filename != 'functions.php' && 
+    if (substr($filename,-4) == '.php' && $filename != 'functions.php' &&
         substr($filename,-8) != '.inc.php' && !is_dir(GSTHEMESPATH.$TEMPLATE.$filename)) {
       $templates[] = $filename;
     }
   }
   sort($templates);
   $lf = "\r\n";
-  $defaultsearchcontent = 
+  $defaultsearchcontent =
 '<h3 class="search-entry-title">'.$lf.
 '  <?php if ($showLanguage) { ?>'.$lf.
 '  <span class="search-entry-language"><?php get_special_field(\'language\'); ?></span>'.$lf.
@@ -263,7 +265,7 @@
     <a class="current" href="#tab-general"><?php i18n('i18n_specialpages/TAB_GENERAL'); ?></a>
   </p>
   <div class="clear" ></div>
-</div>  
+</div>
 
 <form method="post" id="specialpagesForm" action="load.php?id=i18n_specialpages&amp;config&amp;edit=<?php echo $name; ?>">
 
@@ -273,12 +275,12 @@
     <table id="editsp" class="edittable highlight">
       <tr>
         <td><label for="post-name"><?php i18n('i18n_specialpages/NAME'); ?></label></td>
-        <td><input type="text" class="text" style="width:240px" id="post-name" name="post-name" value="<?php echo htmlspecialchars(@$def['name']); ?>" /></td> 
+        <td><input type="text" class="text" style="width:240px" id="post-name" name="post-name" value="<?php echo htmlspecialchars(@$def['name']); ?>" /></td>
         <td><?php i18n('i18n_specialpages/NAME_DESCR'); ?></td>
       </tr>
       <tr>
         <td><label for="post-slug"><?php i18n('SLUG_URL'); ?></label></td>
-        <td><input type="text" class="text" style="width:240px" id="post-slug" name="post-slug" value="<?php echo htmlspecialchars(@$def['slug']); ?>" /></td> 
+        <td><input type="text" class="text" style="width:240px" id="post-slug" name="post-slug" value="<?php echo htmlspecialchars(@$def['slug']); ?>" /></td>
         <td><?php i18n('i18n_specialpages/SLUG_URL_DESCR'); ?></td>
       </tr>
       <tr>
@@ -287,7 +289,7 @@
           <select id="post-parent" name="post-parent" class="text" style="width:250px">
             <option value=""></option>
             <?php foreach ($pages as $slug => $title) { ?>
-            <option value="<?php echo htmlspecialchars($slug); ?>" <?php if ($slug == @$def['parent']) echo 'selected="selected"'; ?> ><?php echo htmlspecialchars($title).' ('.htmlspecialchars($slug).')'; ?></option>  
+            <option value="<?php echo htmlspecialchars($slug); ?>" <?php if ($slug == @$def['parent']) echo 'selected="selected"'; ?> ><?php echo htmlspecialchars($title).' ('.htmlspecialchars($slug).')'; ?></option>
             <?php } ?>
           </select>
         </td>
@@ -295,7 +297,7 @@
       </tr>
       <tr>
         <td><label for="post-tags"><?php i18n('TAG_KEYWORDS'); ?></label></td>
-        <td><input type="text" class="text" style="width:240px" id="post-tags" name="post-tags" value="<?php echo htmlspecialchars(@$def['tags']); ?>" /></td> 
+        <td><input type="text" class="text" style="width:240px" id="post-tags" name="post-tags" value="<?php echo htmlspecialchars(@$def['tags']); ?>" /></td>
         <td><?php i18n('i18n_specialpages/TAG_KEYWORDS_DESCR'); ?></td>
       </tr>
       <tr>
@@ -304,7 +306,7 @@
           <select id="post-template" name="post-template" class="text" style="width:250px">
             <option value=""></option>
             <?php foreach ($templates as $template) { ?>
-            <option value="<?php echo htmlspecialchars($template); ?>" <?php if ($template == @$def['template']) echo 'selected="selected"'; ?> ><?php echo htmlspecialchars($template=='template.php' ? i18n_r('DEFAULT_TEMPLATE') : $template); ?></option>  
+            <option value="<?php echo htmlspecialchars($template); ?>" <?php if ($template == @$def['template']) echo 'selected="selected"'; ?> ><?php echo htmlspecialchars($template=='template.php' ? i18n_r('DEFAULT_TEMPLATE') : $template); ?></option>
             <?php } ?>
           </select>
         </td>
@@ -328,9 +330,9 @@
         </td>
         <td><?php i18n('i18n_specialpages/MENU_DESCR'); ?></td>
       </tr>
-    </table> 
+    </table>
   </div>
-  
+
   <div id="tab-fields" class="tab" style="display:none;">
     <p><?php i18n('i18n_specialpages/CONFIG_EDIT_FIELDS_DESCR'); ?></p>
     <table id="editfields" class="edittable highlight">
@@ -348,13 +350,13 @@
       </thead>
       <tbody>
   <?php
-    $i = 0; 
+    $i = 0;
     if (count(@$def['fields']) > 0) foreach ($def['fields'] as $cf) {
-      i18n_specialpages_confline($i, $cf, 'sortable', $issearch);    
+      i18n_specialpages_confline($i, $cf, 'sortable', $issearch);
       $i++;
     }
-    i18n_specialpages_confline($i, array(), 'hidden', $issearch); 
-  ?> 
+    i18n_specialpages_confline($i, array(), 'hidden', $issearch);
+  ?>
         <tr>
           <td colspan="5"><a href="#" class="add"><?php i18n('i18n_specialpages/ADD_FIELD'); ?></a></td>
           <td class="secondarylink"><a href="#" class="add" title="<?php i18n('i18n_specialpages/ADD_FIELD'); ?>">+</a></td>
@@ -377,7 +379,7 @@
       <button class="valuecancel"><?php i18n('CANCEL'); ?></button>
     </div>
   </div>
-  
+
   <div id="tab-view" class="tab" style="display:none;">
     <p><?php i18n('i18n_specialpages/CONFIG_EDIT_VIEW_DESCR'); ?></p>
     <div class="compdiv">
@@ -395,7 +397,7 @@
       <?php } ?>
       <label for="post-showcomponent"><?php i18n('i18n_specialpages/SHOWCOMPONENT'); ?></label>
       <div class="i18n-sp-wrapper" id="showcomponent" style="clear:both;">
-        <textarea id="post-showcomponent" name="post-showcomponent" style="height:200px"><?php echo htmlspecialchars(@$def['showcomponent']); ?></textarea>
+        <textarea id="post-showcomponent" name="post-showcomponent" style="height:200px"><?php if (array_key_exists('showcomponent', $def)) echo htmlspecialchars(@$def['showcomponent']); ?></textarea>
       </div>
       <?php if ($isi18n && $languages) foreach ($languages as $lang) { ?>
       <div class="i18n-sp-wrapper" id="showcomponent_<?php echo $lang; ?>" style="clear:both;display:none">
@@ -404,7 +406,7 @@
       <?php } ?>
     </div>
   </div>
-  
+
   <?php if ($issearch) { ?>
   <div id="tab-search" class="tab" style="display:none;">
     <p><?php i18n('i18n_specialpages/CONFIG_EDIT_SEARCH_DESCR'); ?></p>
@@ -432,15 +434,15 @@
     </pre>
   </div>
   <?php } ?>
-  
+
   <input type="submit" name="save" value="<?php i18n('i18n_specialpages/SAVE'); ?>" class="submit"/>
   &nbsp;&nbsp; <?php i18n('OR'); ?> &nbsp;&nbsp;
   <a class="cancel" href="load.php?id=i18n_specialpages&amp;config"><?php i18n('CANCEL'); ?></a>
   <?php if (@$_GET['edit']) { ?>
-    &nbsp;/&nbsp; 
+    &nbsp;/&nbsp;
     <a class="cancel" href="load.php?id=i18n_specialpages&amp;config&amp;delete=<?php echo htmlspecialchars($name); ?>"><?php i18n('i18n_specialpages/DELETE'); ?></a>
   <?php } ?>
-  
+
 </form>
 
 <script type="text/javascript" src="../plugins/i18n_specialpages/js/jquery-ui.sort.min.js"></script>
@@ -576,7 +578,7 @@
 </script>
 <?php
 
-function i18n_specialpages_confline($i, $def, $class='', $issearch) {
+function i18n_specialpages_confline($i, $def, $class, $issearch) {
   $isdropdown = @$def['type'] == 'dropdown';
   $indexable = !@$def['type'] || in_array(@$def['type'],array('text','textfull','dropdown','textarea','wysiwyg','checkbox'));
   $options = $isdropdown && count($def['options']) > 0 ? implode("\r\n", $def['options']) : '';
@@ -597,7 +599,7 @@ function i18n_specialpages_confline($i, $def, $class='', $issearch) {
             <option value="file" <?php echo @$def['type']=='file' ? 'selected="selected"' : ''; ?> ><?php i18n('i18n_specialpages/FILE'); ?></option>
             <option value="link" <?php echo @$def['type']=='link' ? 'selected="selected"' : ''; ?> ><?php i18n('i18n_specialpages/LINK'); ?></option>
           </select>
-          <textarea class="text" style="width:150px;height:50px;padding:2px;<?php echo !$isdropdown ? 'display:none' : ''; ?>" name="cf_<?php echo $i; ?>_options"><?php echo htmlspecialchars($options); ?></textarea> 
+          <textarea class="text" style="width:150px;height:50px;padding:2px;<?php echo !$isdropdown ? 'display:none' : ''; ?>" name="cf_<?php echo $i; ?>_options"><?php echo htmlspecialchars($options); ?></textarea>
         </td>
         <td>
           <input type="text" class="text" style="width:100px;padding:2px;<?php if (@$def['type']=='textarea' || @$def['type']=='wysiwyg') echo 'display:none'; ?>" name="cf_<?php echo $i; ?>_value" value="<?php echo htmlspecialchars(@$def['value']); ?>"/>
@@ -615,7 +617,7 @@ function i18n_specialpages_confline($i, $def, $class='', $issearch) {
 <?php } ?>
         <td class="delete"><a href="#" class="delete" title="<?php i18n('i18n_specialpages/DELETE_FIELD'); ?>">X</a></td>
       </tr>
-<?php 
+<?php
 }
 
 

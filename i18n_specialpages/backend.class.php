@@ -5,7 +5,7 @@ if (function_exists('return_i18n_pages')) {
 }
 
 class I18nSpecialPagesBackend {
-  
+
   public static function redirect($js=false) {
     global $metak,$url;
     if (basename($_SERVER['PHP_SELF']) == 'edit.php') {
@@ -27,7 +27,7 @@ class I18nSpecialPagesBackend {
       <?php
       }
       exit(0);
-    }           
+    }
   }
 
   public static function header() {
@@ -44,8 +44,8 @@ class I18nSpecialPagesBackend {
           border-style: solid;
           border-width: 1px 1px 0 1px;
           padding: 2px 8px;
-          border-radius: 5px 5px 0 0; 
-          -moz-border-radius: 5px 5px 0 0; 
+          border-radius: 5px 5px 0 0;
+          -moz-border-radius: 5px 5px 0 0;
           font-weight: normal !important;
           text-decoration: none !important;
           outline-style: none;
@@ -63,7 +63,7 @@ class I18nSpecialPagesBackend {
           position:absolute;
           background:white;
           opacity:1;
-          border:1px black solid; 
+          border:1px black solid;
           padding:5px 10px;
           box-shadow:10px 10px 20px #000000;
           -moz-box-shadow:10px 10px 20px #000000;
@@ -72,10 +72,10 @@ class I18nSpecialPagesBackend {
       </style>
       <script type="text/javascript" src="template/js/ckeditor/ckeditor.js"></script>
       <script type="text/javascript" src="../plugins/i18n_specialpages/js/jquery.dialog.js"></script>
-    <?php  
+    <?php
     } else if (basename($_SERVER['PHP_SELF']) == 'load.php' && @$_GET['id'] == 'i18n_specialpages' && isset($_GET['pages'])) {
       global $SITEURL;
-      ?>  
+      ?>
       <link rel="stylesheet" href="<?php echo $SITEURL ?>plugins/i18n_specialpages/css/jquery.autocomplete.css" type="text/css" charset="utf-8" />
       <style type="text/css">
         #editpages tr.invisible, #editpages tr.nomatch { display: none; }
@@ -110,7 +110,8 @@ class I18nSpecialPagesBackend {
   }
 
   public static function strip($value) {
-    return get_magic_quotes_gpc() ? stripslashes($value) : $value;
+    // return get_magic_quotes_gpc() ? stripslashes($value) : $value;
+    return $value;
   }
 
   public static function save(){
@@ -133,11 +134,11 @@ class I18nSpecialPagesBackend {
         // add special fields:
         if (count(@$def['fields']) > 0) foreach ($def['fields'] as $field) {
           $name = $field['name'];
-          if (isset($_POST['post-sp-'.strtolower($name)])) { 
-            $xml->addChild(strtolower($name))->addCData(self::strip($_POST['post-sp-'.strtolower($name)])); 
+          if (isset($_POST['post-sp-'.strtolower($name)])) {
+            $xml->addChild(strtolower($name))->addCData(self::strip($_POST['post-sp-'.strtolower($name)]));
           }
-        } 
-      } 
+        }
+      }
     }
     // new field for creation date
     if (!isset($xml->creDate)) {
@@ -149,13 +150,13 @@ class I18nSpecialPagesBackend {
       $xml->addChild('user')->addCData($USR);
     }
   }
-  
+
   public static function outputCustomizeCKEditorJS($editorvar) { // copied and modified from ckeditor_add_page_link()
     ?>
       // modify existing Link dialog
       CKEDITOR.on( 'dialogDefinition', function( ev ) {
         if ((ev.editor != <?php echo $editorvar; ?>) || (ev.data.name != 'link')) return;
-    
+
         // Overrides definition.
         var definition = ev.data.definition;
         definition.onFocus = CKEDITOR.tools.override(definition.onFocus, function(original) {
@@ -166,11 +167,11 @@ class I18nSpecialPagesBackend {
               }
           };
         });
-    
+
         // Overrides linkType definition.
         var infoTab = definition.getContents('info');
         var content = getById(infoTab.elements, 'linkType');
-    
+
         content.items.unshift(['Link to local page', 'localPage']);
         content['default'] = 'localPage';
         infoTab.elements.push({
@@ -233,7 +234,7 @@ class I18nSpecialPagesBackend {
       });
     <?php
   }
-  
+
   public static function outputCKEditorJS($fieldname, $editorvar, $width=730, $height=500) {
     global $SITEURL, $TEMPLATE;
     if (defined('GSEDITORLANG')) { $EDLANG = GSEDITORLANG; } else { $EDLANG = i18n_r('CKEDITOR_LANG'); }
@@ -256,7 +257,7 @@ class I18nSpecialPagesBackend {
           forcePasteAsPlainText : true,
           language : '<?php echo $EDLANG; ?>',
           defaultLanguage : 'en',
-          <?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) { 
+          <?php if (file_exists(GSTHEMESPATH .$TEMPLATE."/editor.css")) {
             $fullpath = suggest_site_path();
           ?>
           contentsCss: '<?php echo $fullpath; ?>theme/<?php echo $TEMPLATE; ?>/editor.css',
@@ -329,7 +330,7 @@ class I18nSpecialPagesBackend {
       }
     }
   }
-  
+
   private static function updatePageXML($xml, $def, $updateSlug = false, $updateMap = array()) {
     if (!$def) {
       // special page type is deleted
@@ -341,7 +342,7 @@ class I18nSpecialPagesBackend {
       }
       unset($xml->meta);
       $xml->addChild('meta')->addCData(implode(', ', $tags));
-      return $xml; 
+      return $xml;
     }
     unset($xml->special);
     $xml->addChild('special', $def['name']);
@@ -367,7 +368,7 @@ class I18nSpecialPagesBackend {
         $pos = strrpos($oldurl,'_');
         if ($pos > 0) {
           $suffix = substr($oldurl, $pos);
-          $oldurl = substr($oldurl, 0, $pos); 
+          $oldurl = substr($oldurl, 0, $pos);
         }
       }
       unset($xml->url);
@@ -404,5 +405,5 @@ class I18nSpecialPagesBackend {
     return $xml;
   }
 
-  
+
 }

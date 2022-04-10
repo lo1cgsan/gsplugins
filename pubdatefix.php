@@ -1,7 +1,7 @@
 <?php
 /*
 PubDateFix - plugin for GetSimple CMS (3.1+)
-Makes GS page date field fixed (and editable), plus new replacement lastUpdate field 
+Makes GS page date field fixed (and editable), plus new replacement lastUpdate field
 
 Helper functions / template tags:
  - get_page_lastupdate([dateformat])
@@ -47,7 +47,7 @@ register_plugin(
 add_action('changedata-save', 'pubdatefix_save');
 if (basename($_SERVER['PHP_SELF']) == 'edit.php') {
   i18n_merge($thisfile, $LANG) || (strlen($LANG) > 2 && i18n_merge($thisfile, substr($LANG,0,2))) || i18n_merge($thisfile, 'en');
-  add_action('edit-extras','pubdatefix_edit'); 
+  add_action('edit-extras','pubdatefix_edit');
   if ((!defined('PUBDATEPICKER') || PUBDATEPICKER) && function_exists('register_script')) { // GS 3.1+
     register_script('jquery-datetimepicker', $SITEURL.'plugins/pubdatefix/js/jquery.datetimepicker.js', '2.3.2', false);
     queue_script('jquery-datetimepicker', GSBACK);
@@ -88,7 +88,7 @@ function pubdatefix_save() {
 	$url=(string)$xml->url;
 	if ($url=='index') return;//nie indeksujemy strony głównej
 	$title=(string)$xml->title;
-	if (get_magic_quotes_gpc()) $title=stripslashes($title);
+	// if (get_magic_quotes_gpc()) $title=stripslashes($title);
 	if (file_exists(LUPDATE_FILE)) {
 		$xmldata = getXML(LUPDATE_FILE);
 		$k=0;

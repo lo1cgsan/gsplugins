@@ -29,12 +29,12 @@ function translate_get_php_files($plugin) {
         if ($dir2_handle) {
           while ($filename = readdir($dir2_handle)) {
             if (!is_dir($dir2.$filename) && preg_match('/^(.*)\.php$/', $filename)) {
-              $files[] = $dir2.$filename; 
+              $files[] = $dir2.$filename;
             }
           }
         }
       } else if (preg_match('/^(.*)\.php$/', $filename)) {
-        $files[] = $dir.$filename; 
+        $files[] = $dir.$filename;
       }
     }
     closedir($dir_handle);
@@ -49,10 +49,10 @@ function translate_get_keys_from_php_files($plugin, $files) {
     $content = file_get_contents($file);
     if (preg_match_all('/\$i18n\[[\'"]'.$prefix.'([^\'\"\/]+)[\'"]\]/', $content, $matches)) {
       foreach ($matches[1] as $key) if (!in_array($key, $keys)) $keys[] = $key;
-    } 
+    }
     if (preg_match_all('/\i18n(?:_r)?\([\'"]'.$prefix.'([^\'\"\/]+)[\'"]\)/', $content, $matches)) {
       foreach ($matches[1] as $key) if (!in_array($key, $keys)) $keys[] = $key;
-    } 
+    }
   }
   return $keys;
 }
@@ -139,7 +139,8 @@ function translate_save_language($plugin, $language, $texts) {
   if (!fputs($f, "<?php\n")) return false;
   fputs($f, "\$i18n = array(");
   $first = true;
-  $mq = get_magic_quotes_gpc() || get_magic_quotes_runtime();
+  // $mq = get_magic_quotes_gpc() || get_magic_quotes_runtime();
+  $mq = false;
   foreach ($texts as $key => $text) {
     $k = str_replace("'","\'",$mq ? stripslashes($key) : $key);
     $t = str_replace('"','\"',$mq ? stripslashes($text) : $text);
@@ -190,8 +191,8 @@ function translate_undo($plugin, $language) {
     } else {
       $msg = i18n_r('translate/UNDO_FAILURE');
     }
-  }  
-  if ((isset($_POST['save']) || isset($_POST['save_transifex'])) && 
+  }
+  if ((isset($_POST['save']) || isset($_POST['save_transifex'])) &&
       isset($_POST['plugin']) && @$_POST['target']) {
     $plugin = @$_POST['plugin'];
     $sourcelang = @$_POST['source'];
@@ -231,8 +232,8 @@ function translate_undo($plugin, $language) {
   }
 ?>
 		<h3 class="floated" style="float:left"><?php echo i18n_r('translate/TRANSLATE_HEADER'); ?></h3>
-<?php 
-  if (!isset($_REQUEST['translate'])) { 
+<?php
+  if (!isset($_REQUEST['translate'])) {
     $plugins = translate_get_plugins();
     $plugin = @$_REQUEST['plugin'];
 ?>
@@ -381,7 +382,7 @@ function translate_undo($plugin, $language) {
       </tbody>
     </table>
     <input type="hidden" name="plugin" value="<?php echo htmlspecialchars($plugin); ?>"/>
-    <input type="submit" class="submit" name="translate" value="<?php i18n('translate/TRANSLATE'); ?>"/>    
+    <input type="submit" class="submit" name="translate" value="<?php i18n('translate/TRANSLATE'); ?>"/>
     </form>
 <?php
       }
@@ -401,7 +402,7 @@ function translate_undo($plugin, $language) {
       foreach ($comptexts as $key => $value) {
         // if local text is empty and transifex text = transifex source text, assume not translated
         if (!@$origtexts[$key] && @$targettexts[$key] && $targettexts[$key] == $value) {
-          unset($targettexts[$key]); 
+          unset($targettexts[$key]);
         }
       }
     } else if (substr($targetlang,0,6) == 'local_') {
@@ -414,7 +415,7 @@ function translate_undo($plugin, $language) {
       foreach ($comptexts as $key => $value) {
         // if local text is empty and transifex text = transifex source text, assume not translated
         if (!@$targettexts[$key] && @$origtexts[$key] && $origtexts[$key] == $value) {
-          unset($origtexts[$key]); 
+          unset($origtexts[$key]);
         }
       }
     } else if (substr($targetlang,0,12) == 'notransifex_') {
@@ -461,8 +462,8 @@ function translate_undo($plugin, $language) {
       </thead>
       <tbody>
 <?php
-      $i = 1; 
-      if (count($sourcetexts) > 0) foreach ($sourcetexts as $key => $text) { 
+      $i = 1;
+      if (count($sourcetexts) > 0) foreach ($sourcetexts as $key => $text) {
         $orig = null;
         $bgcolor = null;
         if ($istf && @$origtexts[$key] != @$targettexts[$key]) {
@@ -475,8 +476,8 @@ function translate_undo($plugin, $language) {
           <td <?php echo !in_array($key,$keysfound) ? 'style="color:gray;font-size:90%"' : 'style="font-size:90%"'; ?>><?php echo htmlspecialchars($key); ?></td>
           <td><?php echo htmlspecialchars($text); ?></td>
           <td>
-            <textarea style="height:inherit; padding:2px; width:220px;<?php if ($bgcolor) echo ' background-color:'.$bgcolor; ?>" rows="1" 
-                      class="text" name="text_<?php echo htmlspecialchars($key); ?>" 
+            <textarea style="height:inherit; padding:2px; width:220px;<?php if ($bgcolor) echo ' background-color:'.$bgcolor; ?>" rows="1"
+                      class="text" name="text_<?php echo htmlspecialchars($key); ?>"
                       title="<?php echo htmlspecialchars(@$orig ? $orig : ''); ?>"><?php echo htmlspecialchars(@$targettexts[$key]); ?></textarea>
           </td>
           <td <?php if ($bgcolor) echo 'class="secondarylink"'; ?>>
@@ -484,18 +485,18 @@ function translate_undo($plugin, $language) {
           </td>
         </tr>
 <?php
-        $i++; 
-      } 
+        $i++;
+      }
 ?>
       </tbody>
     </table>
     <p id="submitline">
-      <input type="submit" class="submit" name="save" value="<?php i18n('translate/SAVE'); ?>"/> 
+      <input type="submit" class="submit" name="save" value="<?php i18n('translate/SAVE'); ?>"/>
       <?php if ($savetf) { ?>
       <input type="submit" class="submit" name="save_transifex" value="<?php i18n('translate/SAVE_TRANSIFEX'); ?>"/>
-      <?php } ?> 
+      <?php } ?>
       &nbsp;&nbsp; <?php i18n('OR'); ?> &nbsp;&nbsp;
-      <a class="cancel" href="load.php?id=translate&select&plugin=<?php echo urlencode($plugin); ?>"><?php i18n('CANCEL'); ?></a> 
+      <a class="cancel" href="load.php?id=translate&select&plugin=<?php echo urlencode($plugin); ?>"><?php i18n('CANCEL'); ?></a>
     </p>
     </form>
     <script type="text/javascript" src="../plugins/translate/js/jquery.autogrow.js"></script>
@@ -505,8 +506,8 @@ function translate_undo($plugin, $language) {
         $('#edittrans tbody tr').each(function(i,tr) {
           var $ta = $(tr).find('textarea');
           var $td = $(tr).find('td:first').next();
-          var found = $td.text().toLowerCase().indexOf(s) >= 0 || 
-                      $td.next().text().toLowerCase().indexOf(s) >= 0 || 
+          var found = $td.text().toLowerCase().indexOf(s) >= 0 ||
+                      $td.next().text().toLowerCase().indexOf(s) >= 0 ||
                       $ta.val().toLowerCase().indexOf(s) >= 0;
           if (found) $(tr).removeClass('filtered'); else $(tr).addClass('filtered');
         });
