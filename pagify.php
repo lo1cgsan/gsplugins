@@ -90,7 +90,8 @@ function pagify($content) {
 #  $pageNum: page number to display
 #  $link: link to go to other pages, must include a placeholder '%PAGE%' for the page number (starting with 0)
 function return_pagify_content($content, $pageSize, $pageNum=0, $link=null) {
-  if (!preg_match('/^hr|(\d+)\s*([a-zA-Z]*)$/',$pageSize,$match)) return $content;
+  if (is_null($pageSize)) $pageSize = '';
+  if (!preg_match('/^hr|(\d+)\s*([a-zA-Z]*)$/', $pageSize, $match)) return $content;
   if ($pageSize == 'hr') {
     $pages = preg_split("@\s*<hr\s*/?>\s*@i", $content);
   } else {
@@ -187,7 +188,7 @@ function return_pagify_navigation($numPages, $pageNum=0, $link=null, $link1=null
 // start of modifications by wDEsign
     $pagingHtml .= '
     <div class="container clearfix">
-      <nav class="mb-5" aria-label="Paginacja">
+      <nav class="mt-3 mb-5" aria-label="Paginacja">
         <ul class="pagination justify-content-center">';
     if ($pageNum > 0) {
       $pagingHtml .= ' <li class="page-item first"><a class="page-link" href="'.($link1 ? $link1 : str_replace('%PAGE%',1,$link)).'" title="'.i18n_r('pagify/TITLE_FIRST').'">'.i18n_r('pagify/FIRST').'</a></li>';
