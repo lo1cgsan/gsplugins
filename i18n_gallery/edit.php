@@ -29,7 +29,7 @@ function i18n_gallery_from_request($languages) {
     if (count($languages) > 0) foreach ($languages as $language) {
       if (@$_POST['post-item_'.$i.'_title_'.$language]) $gal['title_'.$language] = $_POST['post-item_'.$i.'_title_'.$language];
       if (@$_POST['post-item_'.$i.'_description_'.$language]) $gal['description_'.$language] = $_POST['post-item_'.$i.'_description_'.$language];
-    } 
+    }
     $gallery['items'][] = $gal;
   }
   return $gallery;
@@ -42,7 +42,7 @@ function i18n_gallery_save($gallery, $oldname) {
 	$data = @new SimpleXMLExtended('<?xml version="1.0" encoding="UTF-8"?><gallery></gallery>');
   foreach ($gallery as $key => $value) {
     if ($key != 'items' && $key != 'item') {
-			$data->addChild($key)->addCData(stripslashes($value));	
+			$data->addChild($key)->addCData(stripslashes($value));
     }
   }
   foreach ($gallery['items'] as $item) {
@@ -146,23 +146,23 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
   			<a href="#" id="metadata_toggle"><?php i18n('i18n_gallery/GALLERY_OPTIONS'); ?></a>
       </p>
 			<div class="clear" ></div>
-		</div>	
+		</div>
 
     <form method="post" id="galleryForm" action="load.php?id=i18n_gallery&amp;edit&amp;name=<?php echo @$name; ?>" accept-charset="utf-8">
 
 		  <p>
 			  <label for="post-title" style="display:none;"><?php i18n('i18n_gallery/TITLE'); ?></label>
-        <input type="text" class="text title lang lang_" id="post-title" name="post-title" value="<?php echo htmlspecialchars(@$gallery['title']); ?>"/>
+        <input type="text" class="text title lang lang_" id="post-title" name="post-title" value="<?php if (array_key_exists('title', $gallery)) echo htmlspecialchars(@$gallery['title']); ?>"/>
 <?php if (count($languages) > 0) foreach ($languages as $language) { ?>
         <input type="text" class="text title lang lang_<?php echo $language; ?>" name="post-title_<?php echo $language; ?>" value="<?php echo htmlspecialchars(@$gallery['title_'.$language]); ?>" style="display:none"/>
 <?php } ?>
 		  </p>
- 
+
 			<div style="display:none;" id="metadata_window" >
   			<div class="leftopt">
           <p>
             <label for="post-name"><?php i18n('i18n_gallery/NAME'); ?></label>
-            <input type="text" class="text" id="post-name" name="post-name" value="<?php echo htmlspecialchars(@$gallery['name']); ?>"/>
+            <input type="text" class="text" id="post-name" name="post-name" value="<?php if (array_key_exists('name', $gallery)) echo htmlspecialchars(@$gallery['name']); ?>"/>
           </p>
           <p>
             <label for="post-type"><?php i18n('i18n_gallery/TYPE'); ?></label>
@@ -187,7 +187,7 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
         </div>
 <?php } ?>
         <div style="clear:both"></div>
-        <?php exec_action('gallery-extras'); ?>    
+        <?php exec_action('gallery-extras'); ?>
       </div>
 
 			<table id="editgallery" class="edittable highlight">
@@ -197,7 +197,7 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
             <th>
               <span style="float:left;width:<?php echo 400-$w; ?>px"><?php i18n('i18n_gallery/FILENAME'); ?></span>
               <span style="float:left;width:120px;"><?php i18n('i18n_gallery/DIMENSIONS'); ?></span>
-              <span style="float:left;width:80px;text-align:right"><?php i18n('i18n_gallery/SIZE'); ?></span> 
+              <span style="float:left;width:80px;text-align:right"><?php i18n('i18n_gallery/SIZE'); ?></span>
               <span style="clear:both;float:left;width:<?php echo 400-$w; ?>px"><?php i18n('i18n_gallery/TITLE'); ?></span>
               <span style="float:left;width:200px"><?php i18n('i18n_gallery/TAGS'); ?></span>
               <span style="clear:both;float:left;width:<?php echo 600-$w; ?>px"><?php i18n('i18n_gallery/DESCRIPTION'); ?></span>
@@ -206,9 +206,9 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
           </tr>
         </thead>
         <tbody>
-<?php 
+<?php
   $i = 0;
-  if (count(@$gallery['items']) > 0) foreach ($gallery['items'] as $item) { 
+  if (count(@$gallery['items']) > 0) foreach ($gallery['items'] as $item) {
     if ($item['size'] >= 1000000) {
       $s = ceil($item['size'] / 1024 / 1024) . ' MB';
     } else if ($item['size'] >= 1000) {
@@ -232,19 +232,19 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
               <input type="hidden" name="post-item_<?php echo $i; ?>_filename" value="<?php echo htmlspecialchars($item['filename']); ?>"/>
               <span class="imagefile" style="float:left;width:<?php echo 400-$w; ?>px"><?php echo htmlspecialchars($item['filename']); ?></span>
               <span class="imagesize" style="float:left;width:120px;"><?php echo $item['width'] . " x " . $item['height']; ?></span>
-              <span class="imagebytes" style="float:left;width:80px;text-align:right"><?php echo $s; ?></span> 
-              <input type="text" class="text lang lang_" name="post-item_<?php echo $i; ?>_title" value="<?php echo htmlspecialchars(@$item['title']); ?>" 
+              <span class="imagebytes" style="float:left;width:80px;text-align:right"><?php echo $s; ?></span>
+              <input type="text" class="text lang lang_" name="post-item_<?php echo $i; ?>_title" value="<?php echo htmlspecialchars(@$item['title']); ?>"
                 title="<?php echo htmlspecialchars(i18n_r('i18n_gallery/TITLE')); ?>" style="clear:both;float:left;width:<?php echo 383-$w; ?>px;margin-right:5px;"/>
 <?php if (count($languages) > 0) foreach ($languages as $language) { ?>
-              <input type="text" class="text lang lang_<?php echo $language; ?>" name="post-item_<?php echo $i; ?>_title_<?php echo $language; ?>" value="<?php echo htmlspecialchars(@$item['title_'.$language]); ?>" 
+              <input type="text" class="text lang lang_<?php echo $language; ?>" name="post-item_<?php echo $i; ?>_title_<?php echo $language; ?>" value="<?php echo htmlspecialchars(@$item['title_'.$language]); ?>"
                 title="<?php echo htmlspecialchars(i18n_r('i18n_gallery/TITLE')); ?>" style="clear:both;float:left;width:<?php echo 383-$w; ?>px;margin-right:5px;display:none;"/>
 <?php } ?>
-              <input type="text" class="text" name="post-item_<?php echo $i; ?>_tags" value="<?php echo htmlspecialchars(@$item['tags']); ?>" 
+              <input type="text" class="text" name="post-item_<?php echo $i; ?>_tags" value="<?php echo htmlspecialchars(@$item['tags']); ?>"
                 title="<?php echo htmlspecialchars(i18n_r('i18n_gallery/TAGS')); ?>" style="float:left;width:188px"/>
-              <textarea class="text lang lang_" name="post-item_<?php echo $i; ?>_description" title="<?php echo htmlspecialchars(i18n_r('i18n_gallery/DESCRIPTION')); ?>" 
+              <textarea class="text lang lang_" name="post-item_<?php echo $i; ?>_description" title="<?php echo htmlspecialchars(i18n_r('i18n_gallery/DESCRIPTION')); ?>"
                 style="clear:both;float:left;width:<?php echo 588-$w; ?>px;height:14px;margin-top:2px;"><?php echo htmlspecialchars(@$item['description']); ?></textarea>
 <?php if (count($languages) > 0) foreach ($languages as $language) { ?>
-              <textarea class="text lang lang_<?php echo $language; ?>" name="post-item_<?php echo $i; ?>_description_<?php echo $language; ?>" title="<?php echo htmlspecialchars(i18n_r('i18n_gallery/DESCRIPTION')); ?>" 
+              <textarea class="text lang lang_<?php echo $language; ?>" name="post-item_<?php echo $i; ?>_description_<?php echo $language; ?>" title="<?php echo htmlspecialchars(i18n_r('i18n_gallery/DESCRIPTION')); ?>"
                 style="clear:both;float:left;width:<?php echo 588-$w; ?>px;height:14px;margin-top:2px;display:none;"><?php echo htmlspecialchars(@$item['description_'.$language]); ?></textarea>
 <?php } ?>
             </td>
@@ -255,9 +255,9 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
               <span class="geo <?php echo $item['latitude'] && $item['longitude'] ? 'geo-yes' : ''; ?>"> </span>
             </td>
           </tr>
-<?php 
+<?php
     $i++;
-  } 
+  }
 ?>
           <tr>
             <td colspan="2" class="add"><a href="#"><?php i18n('i18n_gallery/ADD_IMAGES'); ?></a></td>
@@ -268,7 +268,7 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
       &nbsp;&nbsp; <?php i18n('OR'); ?> &nbsp;&nbsp;
       <a class="cancel" href="load.php?id=i18n_gallery&amp;overview"><?php i18n('CANCEL'); ?></a>
 <?php if (@$name) { ?>
-      &nbsp;/&nbsp; 
+      &nbsp;/&nbsp;
       <a class="cancel" href="load.php?id=i18n_gallery&amp;overview&amp;name=<?php echo $name; ?>&amp;delete"><?php i18n('i18n_gallery/DELETE'); ?></a>
 <?php } ?>
     </form>
@@ -293,7 +293,7 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
         html += '<input type="hidden" name="post-item_'+i+'_filename" value=""/>';
         html += '<span class="imagefile" style="float:left;width:<?php echo 400-$w; ?>px">' + $('<div/>').text(filename).html() + '</span>';
         html += '<span class="imagesize" style="float:left;width:120px;">' + width + ' x ' + height + '</span>';
-        html += '<span class="imagebytes" style="float:left;width:80px;text-align:right">' + getBytesAsText(size) + '</span>'; 
+        html += '<span class="imagebytes" style="float:left;width:80px;text-align:right">' + getBytesAsText(size) + '</span>';
         html += '<input type="text" class="text lang lang_" name="post-item_'+i+'_title" value="" style="clear:both;float:left;width:<?php echo 383-$w; ?>px;margin-right:5px;"/>';
 <?php if (count($languages) > 0) foreach ($languages as $language) { ?>
         html += '<input type="text" class="text lang lang_<?php echo $language; ?>" name="post-item_'+i+'_title<?php echo $language ? '_'.$language : ''; ?>" value="" style="clear:both;float:left;width:<?php echo 383-$w; ?>px;margin-right:5px;display:none;"/>';
@@ -325,13 +325,13 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
       	currentRow.find('img').attr('src', imagefile);
       	currentRow.find('.imagefile').text(filename);
       	currentRow.find('.imagesize').text(width + ' x ' + height);
-      	currentRow.find('.imagebytes').text(getBytesAsText(size)); 
+      	currentRow.find('.imagebytes').text(getBytesAsText(size));
         currentRow.find('[name$=filename]').val(filename);
         renumberRows();
       }
       function setImage(e) {
         currentRow = $(e.target).closest('tr');
-        window.open('<?php echo $SITEURL; ?>plugins/i18n_gallery/browser/imagebrowser.php?func=replaceImage&w=<?php echo $w; ?>&h=<?php echo $h; ?>&autoclose=1', 
+        window.open('<?php echo $SITEURL; ?>plugins/i18n_gallery/browser/imagebrowser.php?func=replaceImage&w=<?php echo $w; ?>&h=<?php echo $h; ?>&autoclose=1',
                 'browser', 'width=800,height=500,left=100,top=100,scrollbars=yes');
         return false;
       }
@@ -339,7 +339,7 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
         $(e.target).closest('tr').remove();
         renumberRows();
         return false;
-      } 
+      }
       function renumberRows() {
         $('#editgallery tbody tr').each(function(i,tr) {
           $(tr).find('input, select, textarea').each(function(k,elem) {
@@ -350,12 +350,12 @@ if (!@$gallery['type']) $gallery['type'] = @$settings['type'] ? $settings['type'
       }
       $(function() {
         $('#editgallery .add a').click(function(e) {
-          window.open('<?php echo $SITEURL; ?>plugins/i18n_gallery/browser/imagebrowser.php?func=addImage&w=<?php echo $w; ?>&h=<?php echo $h; ?>', 
+          window.open('<?php echo $SITEURL; ?>plugins/i18n_gallery/browser/imagebrowser.php?func=addImage&w=<?php echo $w; ?>&h=<?php echo $h; ?>',
                       'browser', 'width=800,height=500,left=100,top=100,scrollbars=yes');
           return false;
         });
         $('#editgallery a.setimage').click(setImage);
-        
+
         $('#editgallery textarea').autogrow({ expandTolerance:1 });
         $('#editgallery .delete a').click(deleteRow);
         $('#editgallery tbody').sortable({
