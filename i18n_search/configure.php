@@ -18,7 +18,7 @@
       if (isset($_POST[$name]) && is_numeric($_POST[$name])) $params[$name] = $_POST[$name];
     }
     foreach (array('showTags','showLanguage','showDate','showPaging','mark') as $name) {
-      if (isset($_POST[$name])) $params[$name] = 1; else $params[$name] = 0; 
+      if (isset($_POST[$name])) $params[$name] = 1; else $params[$name] = 0;
     }
     if (@$_POST['transliteration']) $params['transliteration'] = $_POST['transliteration'];
     if (file_exists(GSDATAOTHERPATH.I18N_SEARCH_SETTINGS_FILE)) {
@@ -33,8 +33,8 @@
     }
 	  XMLsave($data, GSDATAOTHERPATH . I18N_SEARCH_SETTINGS_FILE);
     $success = true;
-    $msg = i18n_r('i18n_search/SAVE_SUCCESS'); 
-    if ($canUndo) $msg .= ' <a href="load.php?id=i18n_search&view=settings&undo">' . i18n_r('UNDO') . '</a>'; 
+    $msg = i18n_r('i18n_search/SAVE_SUCCESS');
+    if ($canUndo) $msg .= ' <a href="load.php?id=i18n_search&view=settings&undo">' . i18n_r('UNDO') . '</a>';
     delete_i18n_search_index();
   } else if (isset($_REQUEST['undo'])) {
     if (file_exists(GSBACKUPSPATH.'other/'.I18N_SEARCH_SETTINGS_FILE)) {
@@ -112,7 +112,7 @@
         <tr><td><?php i18n('i18n_search/MARK'); ?></td><td><input type="checkbox" name="mark" value="on" <?php echo @$params['mark'] ? 'checked="checked"' : ''; ?>/></td><td></td></tr>
         <tr><td colspan="3"><strong><?php i18n('i18n_search/TRANSLITERATION_SETTINGS'); ?></strong></td></tr>
         <tr><td colspan="3"><?php i18n('i18n_search/TRANSLITERATION_DESCRIPTION'); ?></td></tr>
-        <tr><td><?php i18n('i18n_search/TRANSLITERATION'); ?></td><td><textarea name="transliteration" style="width:5em; height:100px;" class="text"><?php echo htmlspecialchars(@$params['transliteration']); ?></textarea></td><td></td></tr>
+        <tr><td><?php i18n('i18n_search/TRANSLITERATION'); ?></td><td><textarea name="transliteration" style="width:5em; height:100px;" class="text"><?php if (array_key_exists('transliteration', $params)) echo htmlspecialchars(@$params['transliteration']); ?></textarea></td><td></td></tr>
       </tbody>
     </table>
     <input type="submit" name="save" value="<?php i18n('i18n_search/SAVE_CONFIGURATION'); ?>" class="submit"/>
@@ -130,8 +130,8 @@
   <code style="display:block;padding-left:2em;margin-bottom:1em;">(% searchform %)<br/>(% searchresults %)</code>
   <p><?php i18n('i18n_search/USAGE_IN_TEMPLATE'); ?></p>
   <code style="display:block;padding-left:2em;margin-bottom:1em;">&lt;?php get_i18n_search_form(array('slug'=>'search')); ?&gt;</code>
-  <p><?php i18n('i18n_search/CUSTOMIZE_1'); ?> 
-    <a href="<?php echo $link; ?>&view=settings"><?php echo i18n_r('i18n_search/VIEW_SETTINGS'); ?></a> 
+  <p><?php i18n('i18n_search/CUSTOMIZE_1'); ?>
+    <a href="<?php echo $link; ?>&view=settings"><?php echo i18n_r('i18n_search/VIEW_SETTINGS'); ?></a>
     <?php i18n('i18n_search/CUSTOMIZE_2'); ?></p>
   <code style="display:block;padding-left:2em;margin-bottom:1em;">(% searchresults max:20 showLanguage:0 DATE_FORMAT:"%A, %d.%m.%Y - %H:%M" %)</code>
   <p><?php i18n('OR'); ?></p>
