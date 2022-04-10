@@ -412,7 +412,7 @@ class gsform {
 				case 'checkbox':
 					if (is_array($fdata)) {
 						if (in_array($k,$fdata)) $fdata=$field['label'];
-						else { $fdata=''; continue; }
+						else { $fdata=''; }
 					} else $fdata=cleantxt($fdata);
 				break;
 				case 'email':
